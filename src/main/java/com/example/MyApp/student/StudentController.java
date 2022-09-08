@@ -2,6 +2,7 @@ package com.example.MyApp.student;
 
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,6 +18,12 @@ public class StudentController {
     @GetMapping("/all")
     public List<Student> getStudents() {
         return studentService.getStudents();
+    }
+
+    @GetMapping("/students")
+    public String viewHomePage(Model model){
+        model.addAttribute("students", "this is coming from CONTROLLER");
+        return "students";
     }
 
     //TODO ALTERNATIVE WAY using ResponseEntity generic class...
@@ -42,5 +49,10 @@ public class StudentController {
                               @RequestParam(required = false) String email) {
         studentService.updateStudent(studentId, name, email);
 
+    }
+
+    @GetMapping(path = "{name}")
+    public List<Student> findByName(@PathVariable("name") String name) {
+        return studentService.findStudentByName(name);
     }
 }

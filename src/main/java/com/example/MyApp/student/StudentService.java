@@ -52,4 +52,8 @@ public class StudentService {
             student.setEmail(email);
         }
     }
+
+    public List<Student> findStudentByName(String name) {
+        return studentRepository.findByNameContainsIgnoreCase(name);
+    }
 }
