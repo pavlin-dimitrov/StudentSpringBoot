@@ -7,8 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import java.util.Optional;
 
 @Controller
 @AllArgsConstructor
@@ -55,16 +54,30 @@ public class StudentController {
 //        studentService.addNewStudent(student);
 //    }
 
-    @DeleteMapping(path = "{studentId}")
-    public void deleteStudent(@PathVariable("studentId") Long studentId) {
-        studentService.deleteStudent(studentId);
+//    @DeleteMapping(path = "{studentId}")
+//    public void deleteStudent(@PathVariable("studentId") Long studentId) {
+//        studentService.deleteStudent(studentId);
+//    }
+
+//    @PutMapping(path = "{studentId}")
+//    public void updateStudent(@PathVariable("studentId") Long studentId,
+//                              @RequestParam(required = false) String name,
+//                              @RequestParam(required = false) String email) {
+//        studentService.updateStudent(studentId, name, email);
+//
+//    }
+
+    @GetMapping("/showFormForUpdate/{id}")
+    public String updateForm(@PathVariable(value = "id") long id, Model model) {
+        Optional<Student> student = studentService.getStudentById(id);
+        model.addAttribute("student", student);
+        return "update";
     }
 
-    @PutMapping(path = "{studentId}")
-    public void updateStudent(@PathVariable("studentId") Long studentId,
-                              @RequestParam(required = false) String name,
-                              @RequestParam(required = false) String email) {
-        studentService.updateStudent(studentId, name, email);
+    @GetMapping("/deleteStudent/{id}")
+    public String deleteThroughId(@PathVariable(value = "id") long id) {
+        studentService.deleteStudent(id);
+        return "redirect:/";
 
     }
 

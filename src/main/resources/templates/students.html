@@ -18,6 +18,7 @@
         <th>Id</th>
         <th>Name</th>
         <th>Email</th>
+        <th>Actions</th>
     </tr>
     </thead>
     <tbody>
@@ -25,6 +26,11 @@
         <td th:text="${student.id}" />
         <td th:text="${student.name}" />
         <td th:text="${student.email}" />
+        <td> <a th:href="@{/showFormForUpdate/{id}(id=${student.id})}"
+                class="btn btn-primary">Update</a>
+            <a th:href="@{/deleteStudent/{id}(id=${student.id})}"
+               class="btn btn-danger">Delete</a>
+        </td>
     </tr>
     </tbody>
 </table>

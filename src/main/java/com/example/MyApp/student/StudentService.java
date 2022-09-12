@@ -3,8 +3,8 @@ package com.example.MyApp.student;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -53,7 +53,13 @@ public class StudentService {
         }
     }
 
+    public Optional<Student> getStudentById(Long id){
+       return studentRepository.findById(id);
+    }
+
     public List<Student> findStudentByName(String name) {
         return studentRepository.findByNameContainsIgnoreCase(name);
     }
+
+
 }
