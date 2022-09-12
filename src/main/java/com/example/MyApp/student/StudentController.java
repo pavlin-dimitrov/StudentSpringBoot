@@ -2,27 +2,31 @@ package com.example.MyApp.student;
 
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+
+@Controller
 @AllArgsConstructor
-@RequestMapping(path = "api/v1/student")
+//@RequestMapping("/api")
 public class StudentController {
 
     @Autowired
     private final StudentService studentService;
 
-    @GetMapping("/all")
-    public List<Student> getStudents() {
-        return studentService.getStudents();
-    }
+//    @GetMapping("/all")
+//    public List<Student> getStudents() {
+//        return studentService.getStudents();
+//    }
 
     @GetMapping("/students")
     public String viewHomePage(Model model){
-        model.addAttribute("students", "this is coming from CONTROLLER");
+        List<Student> students = studentService.getStudents();
+        model.addAttribute("students", students);
         return "students";
     }
 
@@ -33,10 +37,23 @@ public class StudentController {
 //        return new ResponseEntity<>(students, HttpStatus.OK);
 //    }
 
-    @PostMapping("/newStudent")
-    public void registerNewStudent(@RequestBody Student student) {
-        studentService.addNewStudent(student);
+    @GetMapping("/addnew")
+    public String addNewStudent(Model model) {
+        Student student = new Student();
+        model.addAttribute("student", student);
+        return "newstudent";
     }
+
+    @PostMapping("/save")
+    public String saveStudent(@ModelAttribute("student") Student student) {
+        studentService.addNewStudent(student);
+        return "redirect:/students";
+    }
+
+//    @PostMapping("/newStudent")
+//    public void registerNewStudent(@RequestBody Student student) {
+//        studentService.addNewStudent(student);
+//    }
 
     @DeleteMapping(path = "{studentId}")
     public void deleteStudent(@PathVariable("studentId") Long studentId) {
