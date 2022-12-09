@@ -1,9 +1,13 @@
 package com.example.MyApp.student;
 
+import javax.validation.Valid;
+import javax.validation.executable.ValidateOnExecution;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,78 +15,76 @@ import java.util.Optional;
 
 @Controller
 @AllArgsConstructor
-//@RequestMapping("/api")
+// @RequestMapping("/api")
 public class StudentController {
 
-    @Autowired
-    private final StudentService studentService;
+  @Autowired private final StudentService studentService;
 
-//    @GetMapping("/all")
-//    public List<Student> getStudents() {
-//        return studentService.getStudents();
-//    }
+  //    @GetMapping("/all")
+  //    public List<Student> getStudents() {
+  //        return studentService.getStudents();
+  //    }
 
-    @GetMapping("/students")
-    public String viewHomePage(Model model){
-        List<Student> students = studentService.getStudents();
-        model.addAttribute("students", students);
-        return "students";
+  @GetMapping("/students")
+  public String viewHomePage(Model model) {
+    List<Student> students = studentService.getStudents();
+    model.addAttribute("students", students);
+    return "students";
+  }
+
+  // TODO ALTERNATIVE WAY using ResponseEntity generic class...
+  //    @GetMapping("/allStudents")
+  //    public ResponseEntity<List<Student>> getAllStudents(){
+  //        List<Student> students = studentService.getStudents();
+  //        return new ResponseEntity<>(students, HttpStatus.OK);
+  //    }
+
+  @GetMapping("/addnew")
+  public String addNewStudent(Model model) {
+    model.addAttribute("student", new Student());
+    return "newstudent";
+  }
+
+  @PostMapping("/save")
+  public String saveStudent(@Validated Student student, BindingResult result,Model model) {
+    boolean thereIsError = result.hasErrors();
+    if (thereIsError){
+      model.addAttribute("student", student);
+      return "addnew";
+    } else {
+      studentService.addNewStudent(student);
     }
+    return "redirect:/students";
+  }
 
-    //TODO ALTERNATIVE WAY using ResponseEntity generic class...
-//    @GetMapping("/allStudents")
-//    public ResponseEntity<List<Student>> getAllStudents(){
-//        List<Student> students = studentService.getStudents();
-//        return new ResponseEntity<>(students, HttpStatus.OK);
-//    }
+  @GetMapping("/edit/{id}")
+  public String editStudentForm(@PathVariable Long id, Model model) {
+    model.addAttribute("student", studentService.getStudentById(id));
+    return "update";
+  }
 
-    @GetMapping("/addnew")
-    public String addNewStudent(Model model) {
-        Student student = new Student();
-        model.addAttribute("student", student);
-        return "newstudent";
-    }
+  @PostMapping("/updateStudent/{id}")
+  public String updateStudent(
+      @PathVariable Long id, @ModelAttribute("student") Student student, Model model) {
 
-    @PostMapping("/save")
-    public String saveStudent(@ModelAttribute("student") Student student) {
-        studentService.addNewStudent(student);
-        return "redirect:/students";
-    }
+    // get student from database by id
+    Optional<Student> existingStudent = studentService.getStudentById(id);
+    String name = student.getName();
+    String email = student.getEmail();
 
-//    @PostMapping("/newStudent")
-//    public void registerNewStudent(@RequestBody Student student) {
-//        studentService.addNewStudent(student);
-//    }
+    // save updated student object
+    studentService.updateStudent(existingStudent, name, email);
+    return "redirect:/students";
+  }
 
-//    @DeleteMapping(path = "{studentId}")
-//    public void deleteStudent(@PathVariable("studentId") Long studentId) {
-//        studentService.deleteStudent(studentId);
-//    }
+  @GetMapping("/deleteStudent/{id}")
+  public String deleteThroughId(@PathVariable(value = "id") long id) {
+    studentService.deleteStudent(id);
+    return "redirect:/";
+  }
 
-//    @PutMapping(path = "{studentId}")
-//    public void updateStudent(@PathVariable("studentId") Long studentId,
-//                              @RequestParam(required = false) String name,
-//                              @RequestParam(required = false) String email) {
-//        studentService.updateStudent(studentId, name, email);
-//
-//    }
-
-    @GetMapping("/showFormForUpdate/{id}")
-    public String updateForm(@PathVariable(value = "id") long id, Model model) {
-        Optional<Student> student = studentService.getStudentById(id);
-        model.addAttribute("student", student);
-        return "update";
-    }
-
-    @GetMapping("/deleteStudent/{id}")
-    public String deleteThroughId(@PathVariable(value = "id") long id) {
-        studentService.deleteStudent(id);
-        return "redirect:/";
-
-    }
-
-    @GetMapping(path = "{name}")
-    public List<Student> findByName(@PathVariable("name") String name) {
-        return studentService.findStudentByName(name);
-    }
+  @GetMapping(path = "{name}")
+  public List<Student> findByName(@PathVariable("name") String name) {
+    return studentService.findStudentByName(name);
+  }
 }

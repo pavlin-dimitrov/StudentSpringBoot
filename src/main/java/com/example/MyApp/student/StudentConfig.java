@@ -13,22 +13,16 @@ import static java.util.Calendar.JUNE;
 @Configuration
 public class StudentConfig {
 
-    @Bean
-    CommandLineRunner commandLineRunner(StudentRepository repository) {
-        return args -> {
-           Student pavlin = new Student(
-                    "Pavlin Dimitrov",
-                    "pavlin@abv.bg",
-                    LocalDate.of(1989, FEBRUARY, 24)
-           );
+  @Bean
+  CommandLineRunner commandLineRunner(StudentRepository repository) {
+    return args -> {
+      Student pavlin =
+          new Student("Pavlin Dimitrov", "pavlin@abv.bg", LocalDate.of(1989, FEBRUARY, 24).toString());
 
-            Student martin = new Student(
-                    "Martin Dimitrov",
-                    "martin@abv.bg",
-                    LocalDate.of(1992, JUNE, 27)
-            );
+      Student martin =
+          new Student("Martin Dimitrov", "martin@abv.bg", LocalDate.of(1992, JUNE, 27).toString());
 
-            repository.saveAll(List.of(pavlin, martin));
-        };
-    }
+      repository.saveAll(List.of(pavlin, martin));
+    };
+  }
 }

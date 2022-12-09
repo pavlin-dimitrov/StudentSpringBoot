@@ -13,53 +13,52 @@ import java.util.Optional;
 @AllArgsConstructor
 public class StudentService {
 
-    @Autowired
-    private final StudentRepository studentRepository;
+  @Autowired private final StudentRepository studentRepository;
 
-    public List<Student> getStudents() {
-        return studentRepository.findAll();
+  public List<Student> getStudents() {
+    return studentRepository.findAll();
+  }
+
+  public void addNewStudent(Student student) {
+    Optional<Student> studentByEmail = studentRepository.findStudentByEmail(student.getEmail());
+    if (studentByEmail.isPresent()) {
+      throw new IllegalStateException("Email is taken! Use another e-mail address!");
     }
+    studentRepository.save(student);
+  }
 
-    public void addNewStudent(Student student) {
-        Optional<Student> studentByEmail = studentRepository.
-        findStudentByEmail(student.getEmail());
-        if (studentByEmail.isPresent()){
-            throw new IllegalStateException("Email is taken! Use another e-mail address!");
-        }
-        studentRepository.save(student);
+  public void deleteStudent(Long studentId) {
+    boolean studentExists = studentRepository.existsById(studentId);
+    if (!studentExists) {
+      throw new IllegalStateException("Student with ID: " + studentId + " does not exists!");
     }
+    studentRepository.deleteById(studentId);
+  }
 
-    public void deleteStudent(Long studentId) {
-        boolean studentExists = studentRepository.existsById(studentId);
-        if (!studentExists) {
-            throw new IllegalStateException(
-                    "Student with ID: " + studentId + " does not exists!"
-            );
-        }
-        studentRepository.deleteById(studentId);
-    }
-
-    @Transactional
-    public void updateStudent(Long studentId, String name, String email) {
-        Student student = studentRepository.findById(studentId).orElseThrow(() -> new IllegalStateException(
+  @Transactional
+  public void updateStudent(Optional<Student> studentId, String name, String email) {
+    Student student =
+        studentRepository
+            .findById(studentId)
+            .orElseThrow(
+                () ->
+                    new IllegalStateException(
                         "Student with ID: " + studentId + " does not exists"));
 
-        if (name != null && name.length() > 0 && !Objects.equals(student.getName(), name)) {
-            student.setName(name);
-        }
-
-        if (email != null && email.length() > 0 && !Objects.equals(student.getEmail(), email)) {
-            student.setEmail(email);
-        }
+    if (name != null && name.length() > 0 && !Objects.equals(student.getName(), name)) {
+      student.setName(name);
     }
 
-    public Optional<Student> getStudentById(Long id){
-       return studentRepository.findById(id);
+    if (email != null && email.length() > 0 && !Objects.equals(student.getEmail(), email)) {
+      student.setEmail(email);
     }
+  }
 
-    public List<Student> findStudentByName(String name) {
-        return studentRepository.findByNameContainsIgnoreCase(name);
-    }
+  public Optional<Student> getStudentById(Long id) {
+    return studentRepository.findById(id);
+  }
 
-
+  public List<Student> findStudentByName(String name) {
+    return studentRepository.findByNameContainsIgnoreCase(name);
+  }
 }
