@@ -10,9 +10,14 @@ import lombok.SneakyThrows;
 
 public class DateOfBirthValidator implements ConstraintValidator<DateOfBirthLimitation, String> {
 
+  @Override
+  public void initialize(DateOfBirthLimitation dateOfBirthLimitation) {
+    ConstraintValidator.super.initialize(dateOfBirthLimitation);
+  }
+
   @SneakyThrows
   @Override
-  public boolean isValid(String dobField, ConstraintValidatorContext cvc) {
+  public boolean isValid(String dobField, ConstraintValidatorContext cxt) {
     ZoneId zone = ZoneId.systemDefault();
     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
     Date dob = formatter.parse(dobField);

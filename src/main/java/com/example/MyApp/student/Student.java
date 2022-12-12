@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,12 +29,13 @@ public class Student {
       allocationSize = 1)
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "student_sequence")
   private Long id;
-  @NotNull
+  @NotNull (message = "must be NOT empty!")
+  @NotBlank (message = "must be NOT empty!")
   private String name;
 
   private String email;
 
-  @DateOfBirthLimitation()
+  @DateOfBirthLimitation
   private String dob;
 
   @Transient private Integer age;

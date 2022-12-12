@@ -46,15 +46,15 @@ public class StudentController {
   }
 
   @PostMapping("/save")
-  public String saveStudent(@Validated Student student, BindingResult result,Model model) {
+  public String saveStudent(@Valid Student student, BindingResult result,Model model) {
     boolean thereIsError = result.hasErrors();
     if (thereIsError){
-      model.addAttribute("student", student);
-      return "addnew";
+      return "newstudent";
     } else {
+      model.addAttribute("student", student);
       studentService.addNewStudent(student);
+      return "redirect:/students";
     }
-    return "redirect:/students";
   }
 
   @GetMapping("/edit/{id}")
