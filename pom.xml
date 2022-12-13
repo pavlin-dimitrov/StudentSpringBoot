@@ -84,8 +84,11 @@
 					<user>postgres</user>
 					<password>vratsasoft</password>
 					<schemas>
-						<schema>students</schema>
+						<schema>public</schema>
 					</schemas>
+
+						<cleanDisabled>false</cleanDisabled>
+
 				</configuration>
 			</plugin>
 
