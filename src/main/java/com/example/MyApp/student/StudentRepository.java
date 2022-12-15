@@ -15,7 +15,7 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
   List<Student> findByNameContainsIgnoreCase(String name);
 
   @Query("select s from Student s where s.id = ?1")
-  Optional<Student> findById(Optional<Student> student);
+  Optional<Student> findById(Student student);
 
   //    Optional<Student> getStudentById(Long id);
 

@@ -17,9 +17,11 @@
     <h2>Save Student</h2>
 
     <form action="#" th:action="@{/save}" th:object="${student}" method="POST">
+<!--        <input type="text" th:field="*{id}" placeholder="Student ID" class="form-control mb-4 col-4">-->
         <input type="text" th:field="*{name}" placeholder="Student Name" class="form-control mb-4 col-4">
         <p class="alert alert-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Empty field</p>
         <input type="text" th:field="*{email}" placeholder="Student Email" class="form-control mb-4 col-4">
+        <p class="alert alert-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Invalid email</p>
         <input path="dob" type="text" th:field="*{dob}" placeholder="yyyy-MM-dd" class="form-control mb-4 col-4">
         <p class="alert alert-danger" th:if="${#fields.hasErrors('dob')}" th:errors="*{dob}">Invalid DOB</p>
 

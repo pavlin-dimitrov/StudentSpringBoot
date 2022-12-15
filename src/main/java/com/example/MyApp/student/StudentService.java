@@ -36,10 +36,10 @@ public class StudentService {
   }
 
   @Transactional
-  public void updateStudent(Optional<Student> studentId, String name, String email) {
+  public void updateStudent(Student studentId, String name, String email) {
     Student student =
         studentRepository
-            .findById(studentId)
+            .findById(studentId.getId())
             .orElseThrow(
                 () ->
                     new IllegalStateException(
@@ -52,6 +52,7 @@ public class StudentService {
     if (email != null && email.length() > 0 && !Objects.equals(student.getEmail(), email)) {
       student.setEmail(email);
     }
+    studentRepository.save(student);
   }
 
   public Optional<Student> getStudentById(Long id) {

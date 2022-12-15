@@ -1,13 +1,11 @@
 package com.example.MyApp.student;
 
 import javax.validation.Valid;
-import javax.validation.executable.ValidateOnExecution;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -59,21 +57,19 @@ public class StudentController {
 
   @GetMapping("/edit/{id}")
   public String editStudentForm(@PathVariable Long id, Model model) {
-    model.addAttribute("student", studentService.getStudentById(id));
-    return "update";
+    Optional<Student> optionalStudent = this.studentService.getStudentById(id);
+    if (optionalStudent.isPresent()){
+      Student student = optionalStudent.get();
+      model.addAttribute("student", student);
+      return "update";
+    }
+    return "redirect:/error404";
   }
 
   @PostMapping("/updateStudent/{id}")
   public String updateStudent(
-      @PathVariable Long id, @ModelAttribute("student") Student student, Model model) {
-
-    // get student from database by id
-    Optional<Student> existingStudent = studentService.getStudentById(id);
-    String name = student.getName();
-    String email = student.getEmail();
-
-    // save updated student object
-    studentService.updateStudent(existingStudent, name, email);
+      @PathVariable Long id, @ModelAttribute("student") Student student) {
+    studentService.updateStudent(student, student.getName(), student.getEmail());
     return "redirect:/students";
   }
 
